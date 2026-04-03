@@ -40,7 +40,9 @@ function login() {
 
     // Simulação de login (em produção, verificar com backend)
     if (usuario && senha) {
-        salvarDados('usuarioLogado', { usuario, perfil, timestamp: new Date().getTime() });
+        // Se for user, o usuário é a empresa
+        const empresa = perfil === 'user' ? usuario : null;
+        salvarDados('usuarioLogado', { usuario, perfil, empresa, timestamp: new Date().getTime() });
         alert('Login realizado com sucesso!');
         window.location.href = 'index.html';
     } else {
@@ -144,18 +146,6 @@ function carregarQuestionario() {
         salvarDados('questoes', questoes);
     }
     
-    // Carregar empresas no seletor
-    const empresas = carregarDados('empresas') || [];
-    const seletorEmpresa = document.getElementById('empresa');
-    if (seletorEmpresa) {
-        empresas.forEach(empresa => {
-            const option = document.createElement('option');
-            option.value = empresa.nome;
-            option.textContent = `${empresa.nome} (${empresa.setor})`;
-            seletorEmpresa.appendChild(option);
-        });
-    }
-    
     const container = document.getElementById('questionario');
     container.innerHTML = '';
 
@@ -173,12 +163,6 @@ function carregarQuestionario() {
     });
 }// Função para calcular score
 function calcularScore() {
-    const empresaSelecionada = document.getElementById('empresa').value;
-    if (!empresaSelecionada) {
-        alert('Selecione uma empresa!');
-        return;
-    }
-
     const questoes = carregarDados('questoes') || [];
     const usuario = carregarDados('usuarioLogado');
     let score = 0;
@@ -208,13 +192,14 @@ function calcularScore() {
 
     const maxScore = questoes.length * 5;
     
-    // Armazenar com ID único por empresa + usuário
+    // Armazenar com ID único por empresa (user = empresa)
     const avaliacoes = carregarDados('avaliacoes') || [];
-    const idAvaliacao = `${empresaSelecionada}_${usuario.usuario}_${new Date().getTime()}`;
+    const empresa = usuario.perfil === 'user' ? usuario.usuario : null;
+    const idAvaliacao = `${empresa || usuario.usuario}_${new Date().getTime()}`;
     
     avaliacoes.push({
         id: idAvaliacao,
-        empresa: empresaSelecionada,
+        empresa: empresa || usuario.usuario,
         usuario: usuario.usuario,
         perfil: usuario.perfil,
         score: score,
@@ -226,7 +211,6 @@ function calcularScore() {
     salvarDados('avaliacoes', avaliacoes);
     salvarDados('score', score);
     salvarDados('maxScore', maxScore);
-    salvarDados('empresaSelecionada', empresaSelecionada);
 
     // Determinar nível
     let nivel;
@@ -243,14 +227,14 @@ function calcularScore() {
 function exibirRelatorio() {
     const usuario = carregarDados('usuarioLogado');
     const avaliacoes = carregarDados('avaliacoes') || [];
-    const empresaSelecionada = carregarDados('empresaSelecionada');
     
-    // Se for usuário, filtrar apenas suas avaliações
+    // Se for usuário (empresa), filtrar apenas suas avaliações
     let avaliacaoAtual;
     if (usuario.perfil === 'user') {
-        avaliacaoAtual = avaliacoes.filter(a => a.usuario === usuario.usuario && a.empresa === empresaSelecionada).pop();
+        // Usuário vê apenas suas próprias avaliações (última mais recente)
+        avaliacaoAtual = avaliacoes.filter(a => a.usuario === usuario.usuario).pop();
     } else {
-        // Admin vê a última avaliação armazenada (ou pode ver todas)
+        // Admin vê a última avaliação armazenada
         avaliacaoAtual = avaliacoes[avaliacoes.length - 1];
     }
     
@@ -263,7 +247,10 @@ function exibirRelatorio() {
     const maxScore = avaliacaoAtual.maxScore || 100;
     const nivel = carregarDados('nivel') || 'Não calculado';
     const respostas = avaliacaoAtual.respostas || {};
+    const empresa = avaliacaoAtual.empresa || 'Sem identificação';
 
+    // Exibir nome da empresa no topo
+    document.getElementById('empresaRelatorio').textContent = `Questionário da Empresa: ${empresa}`;
     document.getElementById('scoreTotal').textContent = `${score}/${maxScore}`;
     document.getElementById('nivelMaturidade').textContent = nivel;
 
