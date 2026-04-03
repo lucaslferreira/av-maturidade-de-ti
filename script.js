@@ -40,11 +40,67 @@ function login() {
 
     // Simulação de login (em produção, verificar com backend)
     if (usuario && senha) {
-        salvarDados('usuarioLogado', { usuario, perfil });
+        salvarDados('usuarioLogado', { usuario, perfil, timestamp: new Date().getTime() });
         alert('Login realizado com sucesso!');
         window.location.href = 'index.html';
     } else {
         alert('Preencha todos os campos!');
+    }
+}
+
+// Função para logout
+function logout() {
+    localStorage.removeItem('usuarioLogado');
+    localStorage.removeItem('respostas');
+    localStorage.removeItem('score');
+    localStorage.removeItem('maxScore');
+    localStorage.removeItem('nivel');
+    alert('Logout realizado!');
+    window.location.href = 'login.html';
+}
+
+// Função para verificar permissão de acesso
+function verificarPermissao(paginaRequerida) {
+    const usuario = carregarDados('usuarioLogado');
+    if (!usuario) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    
+    // Páginas restritas para Admin
+    const paginasAdmin = ['cadastro_empresa.html', 'cadastro_questoes.html'];
+    
+    if (paginasAdmin.includes(paginaRequerida) && usuario.perfil !== 'admin') {
+        alert('Acesso negado! Apenas administradores podem acessar esta página.');
+        window.location.href = 'index.html';
+        return false;
+    }
+    return true;
+}
+
+// Função para mostrar/ocultar menus baseado em perfil
+function atualizarMenus() {
+    const usuario = carregarDados('usuarioLogado');
+    if (!usuario) return;
+    
+    const btnCadastroEmpresa = document.querySelector('a[href="cadastro_empresa.html"]');
+    const btnCadastroQuestoes = document.querySelector('a[href="cadastro_questoes.html"]');
+    
+    if (usuario.perfil !== 'admin') {
+        if (btnCadastroEmpresa) btnCadastroEmpresa.style.display = 'none';
+        if (btnCadastroQuestoes) btnCadastroQuestoes.style.display = 'none';
+    }
+    
+    // Adicionar botão de logout no header
+    const header = document.querySelector('header');
+    if (header && !document.getElementById('btnLogout')) {
+        const btnLogout = document.createElement('button');
+        btnLogout.id = 'btnLogout';
+        btnLogout.textContent = `Logout (${usuario.usuario})`;
+        btnLogout.onclick = logout;
+        btnLogout.style.cssText = 'background:red;color:white;border:none;padding:0.5rem 1rem;cursor:pointer;border-radius:4px;margin-left:1rem;';
+        const nav = header.querySelector('nav');
+        if (nav) nav.appendChild(btnLogout);
     }
 }
 
@@ -87,6 +143,19 @@ function carregarQuestionario() {
         questoes = questoesPadrao;
         salvarDados('questoes', questoes);
     }
+    
+    // Carregar empresas no seletor
+    const empresas = carregarDados('empresas') || [];
+    const seletorEmpresa = document.getElementById('empresa');
+    if (seletorEmpresa) {
+        empresas.forEach(empresa => {
+            const option = document.createElement('option');
+            option.value = empresa.nome;
+            option.textContent = `${empresa.nome} (${empresa.setor})`;
+            seletorEmpresa.appendChild(option);
+        });
+    }
+    
     const container = document.getElementById('questionario');
     container.innerHTML = '';
 
@@ -98,18 +167,22 @@ function carregarQuestionario() {
             <label><input type="radio" name="q${index}" value="parcial" onclick="togglePlano(${index}, true)"> Parcial</label>
             <label><input type="radio" name="q${index}" value="nok" onclick="togglePlano(${index}, true)"> NOK</label>
             <textarea placeholder="Evidência (se OK)" id="evidencia${index}"></textarea>
-                <textarea placeholder="Justificativa (se Parcial ou NOK)" id="plano${index}" style="display:none;"></textarea>
+            <textarea placeholder="Justificativa (se Parcial ou NOK)" id="plano${index}" style="display:none;"></textarea>
         `;
         container.appendChild(div);
     });
-}
-
-// Função para calcular score
+}// Função para calcular score
 function calcularScore() {
+    const empresaSelecionada = document.getElementById('empresa').value;
+    if (!empresaSelecionada) {
+        alert('Selecione uma empresa!');
+        return;
+    }
+
     const questoes = carregarDados('questoes') || [];
+    const usuario = carregarDados('usuarioLogado');
     let score = 0;
     const respostas = {};
-    const maxScore = questoes.length * 5;
 
     questoes.forEach((questao, index) => {
         const resposta = document.querySelector(`input[name="q${index}"]:checked`);
@@ -133,9 +206,27 @@ function calcularScore() {
         }
     });
 
-    salvarDados('respostas', respostas);
+    const maxScore = questoes.length * 5;
+    
+    // Armazenar com ID único por empresa + usuário
+    const avaliacoes = carregarDados('avaliacoes') || [];
+    const idAvaliacao = `${empresaSelecionada}_${usuario.usuario}_${new Date().getTime()}`;
+    
+    avaliacoes.push({
+        id: idAvaliacao,
+        empresa: empresaSelecionada,
+        usuario: usuario.usuario,
+        perfil: usuario.perfil,
+        score: score,
+        maxScore: maxScore,
+        respostas: respostas,
+        timestamp: new Date().getTime()
+    });
+    
+    salvarDados('avaliacoes', avaliacoes);
     salvarDados('score', score);
     salvarDados('maxScore', maxScore);
+    salvarDados('empresaSelecionada', empresaSelecionada);
 
     // Determinar nível
     let nivel;
@@ -150,10 +241,28 @@ function calcularScore() {
 
 // Função para exibir relatório
 function exibirRelatorio() {
-    const score = carregarDados('score') || 0;
+    const usuario = carregarDados('usuarioLogado');
+    const avaliacoes = carregarDados('avaliacoes') || [];
+    const empresaSelecionada = carregarDados('empresaSelecionada');
+    
+    // Se for usuário, filtrar apenas suas avaliações
+    let avaliacaoAtual;
+    if (usuario.perfil === 'user') {
+        avaliacaoAtual = avaliacoes.filter(a => a.usuario === usuario.usuario && a.empresa === empresaSelecionada).pop();
+    } else {
+        // Admin vê a última avaliação armazenada (ou pode ver todas)
+        avaliacaoAtual = avaliacoes[avaliacoes.length - 1];
+    }
+    
+    if (!avaliacaoAtual) {
+        document.getElementById('detalhes').innerHTML = '<p>Nenhuma avaliação encontrada.</p>';
+        return;
+    }
+
+    const score = avaliacaoAtual.score || 0;
+    const maxScore = avaliacaoAtual.maxScore || 100;
     const nivel = carregarDados('nivel') || 'Não calculado';
-    const maxScore = carregarDados('maxScore') || 100;
-    const respostas = carregarDados('respostas') || {};
+    const respostas = avaliacaoAtual.respostas || {};
 
     document.getElementById('scoreTotal').textContent = `${score}/${maxScore}`;
     document.getElementById('nivelMaturidade').textContent = nivel;
@@ -252,6 +361,8 @@ function verificarLogin() {
     const usuario = carregarDados('usuarioLogado');
     if (!usuario) {
         window.location.href = 'login.html';
+    } else {
+        atualizarMenus();
     }
 }
 
