@@ -223,19 +223,55 @@ function calcularScore() {
     window.location.href = 'relatorio.html';
 }
 
-// Função para exibir relatório
-function exibirRelatorio() {
+// Função para inicializar relatório
+function inicializarRelatorio() {
     const usuario = carregarDados('usuarioLogado');
     const avaliacoes = carregarDados('avaliacoes') || [];
     
-    // Se for usuário (empresa), filtrar apenas suas avaliações
-    let avaliacaoAtual;
-    if (usuario.perfil === 'user') {
-        // Usuário vê apenas suas próprias avaliações (última mais recente)
-        avaliacaoAtual = avaliacoes.filter(a => a.usuario === usuario.usuario).pop();
+    if (usuario.perfil === 'admin') {
+        // Admin vê seletor de relatórios
+        const select = document.getElementById('relatorioSelect');
+        select.innerHTML = '<option value="">Selecione um relatório...</option>';
+        avaliacoes.forEach((avaliacao, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `${avaliacao.empresa} - ${new Date(avaliacao.timestamp).toLocaleString()}`;
+            select.appendChild(option);
+        });
+        document.getElementById('selecaoRelatorio').style.display = 'block';
     } else {
-        // Admin vê a última avaliação armazenada
-        avaliacaoAtual = avaliacoes[avaliacoes.length - 1];
+        // Usuário vê diretamente seu relatório
+        exibirRelatorio();
+        document.getElementById('relatorioContent').style.display = 'block';
+    }
+}
+
+// Função para carregar relatório selecionado
+function carregarRelatorioSelecionado() {
+    const select = document.getElementById('relatorioSelect');
+    const index = select.value;
+    if (index !== '') {
+        const avaliacoes = carregarDados('avaliacoes') || [];
+        exibirRelatorio(avaliacoes[index]);
+        document.getElementById('selecaoRelatorio').style.display = 'none';
+        document.getElementById('relatorioContent').style.display = 'block';
+    }
+}
+
+// Função para exibir relatório
+function exibirRelatorio(avaliacaoAtual = null) {
+    const usuario = carregarDados('usuarioLogado');
+    const avaliacoes = carregarDados('avaliacoes') || [];
+    
+    if (!avaliacaoAtual) {
+        // Lógica padrão: última avaliação
+        if (usuario.perfil === 'user') {
+            // Usuário vê apenas suas próprias avaliações (última mais recente)
+            avaliacaoAtual = avaliacoes.filter(a => a.usuario === usuario.usuario).pop();
+        } else {
+            // Admin vê a última avaliação armazenada (fallback)
+            avaliacaoAtual = avaliacoes[avaliacoes.length - 1];
+        }
     }
     
     if (!avaliacaoAtual) {

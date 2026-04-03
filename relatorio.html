@@ -6,7 +6,7 @@
     <title>Relatório - Avaliação de Maturidade da TI</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body onload="verificarLogin(); exibirRelatorio()">
+<body onload="verificarLogin(); inicializarRelatorio()">
     <header>
         <h1>Relatório de Maturidade da TI</h1>
         <nav>
@@ -14,7 +14,14 @@
         </nav>
     </header>
     <main>
-        <section>
+        <section id="selecaoRelatorio" style="display: none;">
+            <h2>Selecionar Relatório</h2>
+            <select id="relatorioSelect">
+                <option value="">Selecione um relatório...</option>
+            </select>
+            <button onclick="carregarRelatorioSelecionado()">Visualizar Relatório</button>
+        </section>
+        <section id="relatorioContent" style="display: none;">
             <h2 id="empresaRelatorio"></h2>
             <h2>Score Total: <span id="scoreTotal"></span></h2>
             <h2>Nível de Maturidade: <span id="nivelMaturidade"></span></h2>
