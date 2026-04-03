@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Questões - Avaliação de Maturidade da TI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="verificarLogin()">
+    <header>
+        <h1>Cadastrar Questões</h1>
+        <nav>
+            <a href="index.html">Voltar</a>
+        </nav>
+    </header>
+    <main>
+        <form id="formQuestao">
+            <label for="pergunta">Pergunta:</label>
+            <textarea id="pergunta" required></textarea>
+
+            <label for="categoria">Categoria:</label>
+            <select id="categoria">
+                <option value="Processos de TI">Processos de TI</option>
+                <option value="Uso de Ferramentas">Uso de Ferramentas</option>
+                <option value="Nível de Serviço">Nível de Serviço</option>
+                <option value="Alinhamento Estratégico">Alinhamento Estratégico</option>
+                <option value="Governança de TI">Governança de TI</option>
+                <option value="Gestão de Riscos">Gestão de Riscos</option>
+                <option value="Cultura de TI">Cultura de TI</option>
+            </select>
+
+            <button type="button" onclick="cadastrarQuestao()">Cadastrar</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2026 - Sistema de Avaliação de Maturidade da TI</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
