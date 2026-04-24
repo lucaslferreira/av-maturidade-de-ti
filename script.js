@@ -346,10 +346,11 @@ function carregarQuestionario() {
 // Função para determinar nível baseado no score
 function determinarNivel(score, maxScore) {
     const percentual = maxScore > 0 ? (score / maxScore) * 100 : 0;
-    if (percentual <= 25) return 'Artesanal';
-    else if (percentual <= 50) return 'Intermediário';
-    else if (percentual <= 75) return 'Eficaz';
-    else return 'Otimizado';
+    if (percentual <= 20) return 'Inicial';
+    else if (percentual <= 40) return 'Básico';
+    else if (percentual <= 60) return 'Intermediário';
+    else if (percentual <= 80) return 'Avançado';
+    else return 'Excelente';
 }
 
 // Função para calcular score
