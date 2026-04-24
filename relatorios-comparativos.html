@@ -313,8 +313,8 @@
                     <div class="grafico-header">
                         <div class="grafico-titulo">Comparação de Maturidade por Empresa</div>
                         <div class="periodo-selector">
-                            <button class="periodo-btn active" onclick="alterarPeriodoGrafico('barra', 'ultima')">Última Avaliação</button>
-                            <button class="periodo-btn" onclick="alterarPeriodoGrafico('barra', 'media')">Média Histórica</button>
+                            <button class="periodo-btn active" onclick="alterarPeriodoGrafico(event, 'barra', 'ultima')">Última Avaliação</button>
+                            <button class="periodo-btn" onclick="alterarPeriodoGrafico(event, 'barra', 'media')">Média Histórica</button>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -326,9 +326,9 @@
                     <div class="grafico-header">
                         <div class="grafico-titulo">Evolução Temporal da Maturidade</div>
                         <div class="periodo-selector">
-                            <button class="periodo-btn active" onclick="alterarPeriodoGrafico('linha', '30')">30 dias</button>
-                            <button class="periodo-btn" onclick="alterarPeriodoGrafico('linha', '90')">90 dias</button>
-                            <button class="periodo-btn" onclick="alterarPeriodoGrafico('linha', '365')">1 ano</button>
+                            <button class="periodo-btn active" onclick="alterarPeriodoGrafico(event, 'linha', '30')">30 dias</button>
+                            <button class="periodo-btn" onclick="alterarPeriodoGrafico(event, 'linha', '90')">90 dias</button>
+                            <button class="periodo-btn" onclick="alterarPeriodoGrafico(event, 'linha', '365')">1 ano</button>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -845,7 +845,7 @@
         }
 
         // Alterar período do gráfico
-        function alterarPeriodoGrafico(tipo, periodo) {
+        function alterarPeriodoGrafico(event, tipo, periodo) {
             // Atualizar botões ativos
             document.querySelectorAll(`.periodo-selector button`).forEach(btn => {
                 btn.classList.remove('active');

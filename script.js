@@ -38,6 +38,19 @@ const questoesPadrao = [
         }
     },
     {
+        pergunta: "Se Parcial ou NOK, existe responsável definido para revisão desses processos?",
+        categoria: "Processos de TI",
+        frameworks: {
+            cobit: "BAI06",
+            itil: "Change Enablement",
+            iso27001: "A.12.1"
+        },
+        dependencia: {
+            pai: 2,
+            valores: ["parcial", "nok"]
+        }
+    },
+    {
         pergunta: "A empresa monitora continuamente o desempenho da infraestrutura de TI?",
         categoria: "Uso de Ferramentas",
         frameworks: {
@@ -53,6 +66,19 @@ const questoesPadrao = [
             cobit: "BAI03",
             itil: "Automation / Orchestration",
             iso27001: "A.12.2"
+        }
+    },
+    {
+        pergunta: "Se Parcial ou NOK, existe um plano de melhoria identificado para automação manual?",
+        categoria: "Uso de Ferramentas",
+        frameworks: {
+            cobit: "BAI03",
+            itil: "Automation / Orchestration",
+            iso27001: "A.12.2"
+        },
+        dependencia: {
+            pai: 5,
+            valores: ["parcial", "nok"]
         }
     },
     {
@@ -310,37 +336,55 @@ function cadastrarQuestao() {
 
 // Função para carregar questionário
 function carregarQuestionario() {
-    let questoes = carregarDados('questoes');
-    if (!questoes || questoes.length === 0) {
-        questoes = questoesPadrao;
-        salvarDados('questoes', questoes);
+    let questoesSalvas = carregarDados('questoes');
+    if (!questoesSalvas || questoesSalvas.length === 0) {
+        questoesSalvas = questoesPadrao;
+        salvarDados('questoes', questoesSalvas);
     } else {
-        // Garantir que questões carregadas anteriormente recebam o mapeamento de frameworks
-        questoes = questoes.map(questao => {
-            const padrao = questoesPadrao.find(q => q.pergunta === questao.pergunta);
-            return padrao ? { ...padrao, ...questao } : questao;
+        // Garantir que novas perguntas padrão sejam adicionadas e que definições antigas sejam atualizadas
+        const questoesAtualizadas = questoesPadrao.map(questaoPadrao => {
+            const questaoSalva = questoesSalvas.find(q => q.pergunta === questaoPadrao.pergunta);
+            return questaoSalva ? { ...questaoPadrao, ...questaoSalva } : questaoPadrao;
         });
-        salvarDados('questoes', questoes);
+
+        // Incluir questões personalizadas que não existam mais no padrão
+        const questoesExtras = questoesSalvas.filter(questaoSalva =>
+            !questoesPadrao.some(questaoPadrao => questaoPadrao.pergunta === questaoSalva.pergunta)
+        );
+
+        questoesSalvas = [...questoesAtualizadas, ...questoesExtras];
+        salvarDados('questoes', questoesSalvas);
     }
     
     const container = document.getElementById('questionario');
     container.innerHTML = '';
 
-    questoes.forEach((questao, index) => {
+    questoesSalvas.forEach((questao, index) => {
         const peso = categoryWeights[questao.categoria] || 1;
         const div = document.createElement('div');
+        div.id = `questionBlock${index}`;
+        div.className = 'question-card';
+        div.style.display = questao.dependencia ? 'none' : 'block';
         div.innerHTML = `
             <p><strong>${questao.categoria}:</strong> ${questao.pergunta}</p>
             <p class="framework-mapping"><em>Frameworks:</em> COBIT: ${questao.frameworks?.cobit || 'N/A'}; ITIL: ${questao.frameworks?.itil || 'N/A'}; ISO 27001: ${questao.frameworks?.iso27001 || 'N/A'}</p>
             <p class="category-weight"><em>Peso da categoria:</em> ${peso}</p>
-            <label><input type="radio" name="q${index}" value="ok" required onclick="togglePlano(${index}, false)"> OK</label>
-            <label><input type="radio" name="q${index}" value="parcial" onclick="togglePlano(${index}, true)"> Parcial</label>
-            <label><input type="radio" name="q${index}" value="nok" onclick="togglePlano(${index}, true)"> NOK</label>
+            <div class="radio-group">
+                <label><input type="radio" name="q${index}" value="ok" onclick="togglePlano(${index}, false); atualizarDependencias();"> OK</label>
+                <label><input type="radio" name="q${index}" value="parcial" onclick="togglePlano(${index}, true); atualizarDependencias();"> Parcial</label>
+                <label><input type="radio" name="q${index}" value="nok" onclick="togglePlano(${index}, true); atualizarDependencias();"> NOK</label>
+            </div>
             <textarea placeholder="Evidência (se OK)" id="evidencia${index}"></textarea>
             <textarea placeholder="Justificativa (se Parcial ou NOK)" id="plano${index}" style="display:none;"></textarea>
+            <div id="acaoGroup${index}" style="display:none; margin-top: 0.5rem;">
+                <textarea placeholder="Plano de ação" id="acao${index}" style="margin-top:0.5rem;"></textarea>
+                <input type="text" placeholder="Responsável pela ação" id="responsavel${index}" style="margin-top:0.75rem;" />
+                <input type="date" id="prazo${index}" style="margin-top:0.75rem;" />
+            </div>
         `;
         container.appendChild(div);
     });
+    atualizarDependencias();
 }
 
 // Função para determinar nível baseado no score
@@ -351,6 +395,26 @@ function determinarNivel(score, maxScore) {
     else if (percentual <= 60) return 'Intermediário';
     else if (percentual <= 80) return 'Avançado';
     else return 'Excelente';
+}
+
+function formatNivelClass(nivel) {
+    return nivel
+        .toLowerCase()
+        .replace(/ã/g, 'a')
+        .replace(/á/g, 'a')
+        .replace(/â/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/ê/g, 'e')
+        .replace(/í/g, 'i')
+        .replace(/ó/g, 'o')
+        .replace(/ô/g, 'o')
+        .replace(/ú/g, 'u')
+        .replace(/ç/g, 'c')
+        .replace(/ -/g, '')
+        .replace(/ -/g, '')
+        .replace(/ -/g, '')
+        .replace(/ -/g, '')
+        .replace(/\s+/g, '-');
 }
 
 // Função para calcular score
@@ -364,6 +428,9 @@ function calcularScore() {
         const resposta = document.querySelector(`input[name="q${index}"]:checked`);
         const evidencia = document.getElementById(`evidencia${index}`).value;
         const plano = document.getElementById(`plano${index}`).value;
+        const acao = document.getElementById(`acao${index}`).value;
+        const responsavel = document.getElementById(`responsavel${index}`).value;
+        const prazo = document.getElementById(`prazo${index}`).value;
         const peso = categoryWeights[questao.categoria] || 1;
         if (resposta) {
             respostas[questao.categoria] = respostas[questao.categoria] || { ok: 0, parcial: 0, nok: 0 };
@@ -377,13 +444,17 @@ function calcularScore() {
                 respostas[questao.categoria].nok++;
                 score += 0;
             }
-            // Salvar evidência, justificativa e mapeamento de frameworks
+            // Salvar evidência, justificativa, plano de ação e mapeamento de frameworks
             respostas[questao.categoria].detalhes = respostas[questao.categoria].detalhes || [];
             respostas[questao.categoria].detalhes.push({
                 pergunta: questao.pergunta,
                 resposta: resposta.value,
                 evidencia,
                 justificativa: plano,
+                planoAcao: acao || null,
+                responsavel: responsavel || null,
+                prazo: prazo || null,
+                statusAcao: acao ? 'Aberto' : null,
                 frameworks: questao.frameworks || null,
                 peso
             });
@@ -503,6 +574,7 @@ function exibirRelatorio(avaliacaoAtual = null) {
         const justificativasDiv = document.createElement('div');
         justificativasDiv.innerHTML = '<h2>Justificativas (Parcial/NOK)</h2>';
         let hasJustificativas = false;
+        let hasPlanoAcao = false;
         for (const categoria in respostas) {
             if (categoria === 'detalhes') continue;
             if (respostas[categoria].detalhes) {
@@ -520,6 +592,32 @@ function exibirRelatorio(avaliacaoAtual = null) {
             justificativasDiv.innerHTML += '<p>Nenhuma justificativa registrada.</p>';
         }
         detalhes.appendChild(justificativasDiv);
+
+        const planoAcaoDiv = document.createElement('div');
+        planoAcaoDiv.innerHTML = '<h2>Plano de Ação (NOK/Parcial)</h2>';
+        for (const categoria in respostas) {
+            if (categoria === 'detalhes') continue;
+            if (respostas[categoria].detalhes) {
+                respostas[categoria].detalhes.forEach(d => {
+                    if (d.resposta !== 'ok' && d.planoAcao) {
+                        hasPlanoAcao = true;
+                        const p = document.createElement('p');
+                        p.innerHTML = `
+                            <strong>${d.pergunta} (${d.resposta}):</strong><br>
+                            Ação: ${d.planoAcao}<br>
+                            Responsável: ${d.responsavel || 'Não definido'}<br>
+                            Prazo: ${d.prazo || 'Não definido'}<br>
+                            Status: ${d.statusAcao}
+                        `;
+                        planoAcaoDiv.appendChild(p);
+                    }
+                });
+            }
+        }
+        if (!hasPlanoAcao) {
+            planoAcaoDiv.innerHTML += '<p>Nenhum plano de ação registrado.</p>';
+        }
+        detalhes.appendChild(planoAcaoDiv);
 
         // Interpretação dos resultados (baseado na maior parte das respostas)
         const interpretacaoDiv = document.createElement('div');
@@ -920,8 +1018,21 @@ function exibirDashboard(avaliacoes) {
     const nivel = determinarNivel(score, 100);
 
     // Métricas gerais
+    const nivelClass = nivel
+        .toLowerCase()
+        .replace(/ã/g, 'a')
+        .replace(/á/g, 'a')
+        .replace(/â/g, 'a')
+        .replace(/é/g, 'e')
+        .replace(/ê/g, 'e')
+        .replace(/í/g, 'i')
+        .replace(/ó/g, 'o')
+        .replace(/ô/g, 'o')
+        .replace(/ú/g, 'u')
+        .replace(/ç/g, 'c')
+        .replace(/\s+/g, '-');
     document.getElementById('nivelAtual').textContent = nivel;
-    document.getElementById('nivelAtual').className = `nivel-indicator nivel-${nivel.toLowerCase()}`;
+    document.getElementById('nivelAtual').className = `nivel-indicator nivel-${nivelClass}`;
     document.getElementById('scoreTotal').textContent = `${score}/100`;
     document.getElementById('totalAvaliacoes').textContent = avaliacoes.length;
     document.getElementById('ultimaAvaliacao').textContent = new Date(ultimaAvaliacao.timestamp).toLocaleDateString('pt-BR');
@@ -1179,10 +1290,39 @@ function verificarLogin() {
 // Função para mostrar/ocultar plano de contingência
 function togglePlano(index, show) {
     const plano = document.getElementById(`plano${index}`);
+    const acaoGroup = document.getElementById(`acaoGroup${index}`);
     if (show) {
         plano.style.display = 'block';
+        acaoGroup.style.display = 'block';
     } else {
         plano.style.display = 'none';
         plano.value = '';
+        acaoGroup.style.display = 'none';
+        const acao = document.getElementById(`acao${index}`);
+        const responsavel = document.getElementById(`responsavel${index}`);
+        const prazo = document.getElementById(`prazo${index}`);
+        if (acao) acao.value = '';
+        if (responsavel) responsavel.value = '';
+        if (prazo) prazo.value = '';
     }
+}
+
+function atualizarDependencias() {
+    const questoes = carregarDados('questoes') || questoesPadrao;
+    questoes.forEach((questao, index) => {
+        if (!questao.dependencia) return;
+
+        const bloco = document.getElementById(`questionBlock${index}`);
+        const pai = questao.dependencia.pai;
+        const respostaPai = document.querySelector(`input[name="q${pai}"]:checked`);
+        const mostrar = respostaPai && questao.dependencia.valores.includes(respostaPai.value);
+
+        if (bloco) {
+            bloco.style.display = mostrar ? 'block' : 'none';
+            if (!mostrar) {
+                bloco.querySelectorAll('input[type="radio"]').forEach(input => input.checked = false);
+                bloco.querySelectorAll('textarea, input[type="text"], input[type="date"]').forEach(input => input.value = '');
+            }
+        }
+    });
 }
