@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Avaliação de Maturidade da TI</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body onload="verificarLogin(); carregarDashboard()">
+    <header>
+        <h1>Dashboard de Maturidade da TI</h1>
+        <nav>
+            <a href="index.html">Voltar</a>
+        </nav>
+    </header>
+    <main>
+        <section id="metricasGerais">
+            <h2>Métricas Gerais</h2>
+            <div class="metricas-grid">
+                <div class="metrica-card">
+                    <h3>Nível Atual</h3>
+                    <div id="nivelAtual" class="nivel-indicator">Carregando...</div>
+                </div>
+                <div class="metrica-card">
+                    <h3>Score Total</h3>
+                    <div id="scoreTotal" class="score-display">0/100</div>
+                </div>
+                <div class="metrica-card">
+                    <h3>Avaliações Realizadas</h3>
+                    <div id="totalAvaliacoes" class="count-display">0</div>
+                </div>
+                <div class="metrica-card">
+                    <h3>Última Avaliação</h3>
+                    <div id="ultimaAvaliacao" class="date-display">--/--/----</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="graficos">
+            <h2>Visualizações</h2>
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h3>Distribuição por Categoria</h3>
+                    <canvas id="chartCategoria"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Status das Respostas</h3>
+                    <canvas id="chartStatus"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Evolução da Maturidade</h3>
+                    <canvas id="chartEvolucao"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Pesos das Categorias</h3>
+                    <canvas id="chartPesos"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="insights">
+            <h2>Insights e Recomendações</h2>
+            <div id="insightsContent">
+                <p>Carregando insights...</p>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 - Sistema de Avaliação de Maturidade da TI</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

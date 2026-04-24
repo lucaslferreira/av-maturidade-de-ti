@@ -891,6 +891,280 @@ function carregarServicos() {
     });
 }
 
+// ==================== DASHBOARD COM GRÁFICOS ====================
+
+function carregarDashboard() {
+    const usuario = carregarDados('usuarioLogado');
+    const avaliacoes = carregarDados('avaliacoes') || [];
+
+    if (usuario.perfil === 'admin') {
+        // Admin vê todas as avaliações
+        exibirDashboard(avaliacoes);
+    } else {
+        // Usuário vê apenas suas próprias avaliações
+        const avaliacoesUsuario = avaliacoes.filter(a => a.usuario === usuario.usuario);
+        exibirDashboard(avaliacoesUsuario);
+    }
+}
+
+function exibirDashboard(avaliacoes) {
+    if (avaliacoes.length === 0) {
+        document.getElementById('insightsContent').innerHTML = '<p>Nenhuma avaliação encontrada. Realize uma avaliação primeiro.</p>';
+        return;
+    }
+
+    // Última avaliação
+    const ultimaAvaliacao = avaliacoes[avaliacoes.length - 1];
+    const score = ultimaAvaliacao.score || 0;
+    const nivel = determinarNivel(score, 100);
+
+    // Métricas gerais
+    document.getElementById('nivelAtual').textContent = nivel;
+    document.getElementById('nivelAtual').className = `nivel-indicator nivel-${nivel.toLowerCase()}`;
+    document.getElementById('scoreTotal').textContent = `${score}/100`;
+    document.getElementById('totalAvaliacoes').textContent = avaliacoes.length;
+    document.getElementById('ultimaAvaliacao').textContent = new Date(ultimaAvaliacao.timestamp).toLocaleDateString('pt-BR');
+
+    // Criar gráficos
+    criarGraficoCategoria(ultimaAvaliacao);
+    criarGraficoStatus(ultimaAvaliacao);
+    criarGraficoEvolucao(avaliacoes);
+    criarGraficoPesos();
+
+    // Gerar insights
+    gerarInsights(ultimaAvaliacao);
+}
+
+function criarGraficoCategoria(avaliacao) {
+    const ctx = document.getElementById('chartCategoria').getContext('2d');
+    const respostas = avaliacao.respostas || {};
+
+    const categorias = Object.keys(respostas).filter(cat => cat !== 'detalhes');
+    const dadosOK = categorias.map(cat => respostas[cat].ok || 0);
+    const dadosParcial = categorias.map(cat => respostas[cat].parcial || 0);
+    const dadosNOK = categorias.map(cat => respostas[cat].nok || 0);
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: categorias,
+            datasets: [{
+                label: 'OK',
+                data: dadosOK,
+                backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                borderColor: 'rgba(40, 167, 69, 1)',
+                borderWidth: 1
+            }, {
+                label: 'Parcial',
+                data: dadosParcial,
+                backgroundColor: 'rgba(255, 193, 7, 0.8)',
+                borderColor: 'rgba(255, 193, 7, 1)',
+                borderWidth: 1
+            }, {
+                label: 'NOK',
+                data: dadosNOK,
+                backgroundColor: 'rgba(220, 53, 69, 0.8)',
+                borderColor: 'rgba(220, 53, 69, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    stacked: true,
+                },
+                y: {
+                    stacked: true,
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Distribuição de Respostas por Categoria'
+                }
+            }
+        }
+    });
+}
+
+function criarGraficoStatus(avaliacao) {
+    const ctx = document.getElementById('chartStatus').getContext('2d');
+    const respostas = avaliacao.respostas || {};
+
+    let totalOK = 0, totalParcial = 0, totalNOK = 0;
+    for (const categoria in respostas) {
+        if (categoria === 'detalhes') continue;
+        totalOK += respostas[categoria].ok || 0;
+        totalParcial += respostas[categoria].parcial || 0;
+        totalNOK += respostas[categoria].nok || 0;
+    }
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['OK', 'Parcial', 'NOK'],
+            datasets: [{
+                data: [totalOK, totalParcial, totalNOK],
+                backgroundColor: [
+                    'rgba(40, 167, 69, 0.8)',
+                    'rgba(255, 193, 7, 0.8)',
+                    'rgba(220, 53, 69, 0.8)'
+                ],
+                borderColor: [
+                    'rgba(40, 167, 69, 1)',
+                    'rgba(255, 193, 7, 1)',
+                    'rgba(220, 53, 69, 1)'
+                ],
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Status Geral das Respostas'
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+function criarGraficoEvolucao(avaliacoes) {
+    const ctx = document.getElementById('chartEvolucao').getContext('2d');
+
+    // Ordenar avaliações por data
+    const avaliacoesOrdenadas = avaliacoes.sort((a, b) => a.timestamp - b.timestamp);
+
+    const labels = avaliacoesOrdenadas.map(a => new Date(a.timestamp).toLocaleDateString('pt-BR'));
+    const scores = avaliacoesOrdenadas.map(a => a.score || 0);
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Score de Maturidade',
+                data: scores,
+                borderColor: 'rgba(0, 123, 255, 1)',
+                backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Evolução da Maturidade ao Longo do Tempo'
+                }
+            }
+        }
+    });
+}
+
+function criarGraficoPesos() {
+    const ctx = document.getElementById('chartPesos').getContext('2d');
+
+    const categorias = Object.keys(categoryWeights);
+    const pesos = categorias.map(cat => categoryWeights[cat]);
+
+    new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: categorias,
+            datasets: [{
+                label: 'Peso da Categoria',
+                data: pesos,
+                borderColor: 'rgba(153, 102, 255, 1)',
+                backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(153, 102, 255, 1)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgba(153, 102, 255, 1)'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Importância das Categorias'
+                }
+            },
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 2
+                }
+            }
+        }
+    });
+}
+
+function gerarInsights(avaliacao) {
+    const score = avaliacao.score || 0;
+    const respostas = avaliacao.respostas || {};
+    const insights = [];
+
+    // Análise geral
+    if (score >= 75) {
+        insights.push('🏆 Excelente maturidade! A TI está bem posicionada e integrada aos objetivos do negócio.');
+    } else if (score >= 50) {
+        insights.push('📈 Boa maturidade. Há progresso significativo, mas ainda há oportunidades de melhoria.');
+    } else if (score >= 25) {
+        insights.push('⚠️ Maturidade intermediária. É necessário investir em processos e ferramentas.');
+    } else {
+        insights.push('🚨 Maturidade inicial. Priorize a implementação de processos básicos de TI.');
+    }
+
+    // Análise por categoria
+    const categoriasCriticas = [];
+    for (const categoria in respostas) {
+        if (categoria === 'detalhes') continue;
+        const total = (respostas[categoria].ok || 0) + (respostas[categoria].parcial || 0) + (respostas[categoria].nok || 0);
+        const percentualOK = total > 0 ? ((respostas[categoria].ok || 0) / total) * 100 : 0;
+
+        if (percentualOK < 50) {
+            categoriasCriticas.push(categoria);
+        }
+    }
+
+    if (categoriasCriticas.length > 0) {
+        insights.push(`🎯 Foco necessário em: ${categoriasCriticas.join(', ')}`);
+    }
+
+    // Recomendações específicas
+    if (respostas['Gestão de Riscos'] && respostas['Gestão de Riscos'].nok > 0) {
+        insights.push('🛡️ Priorize a implementação de planos de continuidade e segurança da informação.');
+    }
+
+    if (respostas['Processos de TI'] && respostas['Processos de TI'].nok > 0) {
+        insights.push('📋 Implemente processos documentados e frameworks como ITIL.');
+    }
+
+    if (respostas['Governança de TI'] && respostas['Governança de TI'].nok > 0) {
+        insights.push('👥 Estabeleça um comitê de governança e políticas claras.');
+    }
+
+    const insightsHTML = insights.map(insight => `<div class="insight-item">${insight}</div>`).join('');
+    document.getElementById('insightsContent').innerHTML = insightsHTML;
+}
+
 // Verificar se usuário está logado
 function verificarLogin() {
     const usuario = carregarDados('usuarioLogado');
