@@ -31,10 +31,10 @@ Máximo: 100 pontos
 
 ## Níveis de Maturidade
 
-- **Artesanal/Reativo:** 0-29 pontos
-- **Eficiente/Proativo:** 30-59 pontos
-- **Eficaz/Otimizado:** 60-79 pontos
-- **Estratégico:** 80-100 pontos
+- **Artesanal:** 0-25 pontos
+- **Intermediário:** 26-50 pontos
+- **Eficaz:** 51-75 pontos
+- **Otimizado:** 76-100 pontos
 
 ## Como Usar
 

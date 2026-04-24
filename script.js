@@ -10,27 +10,197 @@ function carregarDados(chave) {
 
 // Questões padrão de gestão de TI
 const questoesPadrao = [
-    { pergunta: "A empresa possui processos documentados para gestão de TI?", categoria: "Processos de TI" },
-    { pergunta: "São utilizados frameworks como ITIL para gestão de serviços?", categoria: "Processos de TI" },
-    { pergunta: "Há implementação de processos de mudança controlada?", categoria: "Processos de TI" },
-    { pergunta: "A empresa monitora continuamente o desempenho da infraestrutura de TI?", categoria: "Uso de Ferramentas" },
-    { pergunta: "São utilizadas ferramentas de automação para tarefas repetitivas?", categoria: "Uso de Ferramentas" },
-    { pergunta: "Há integração entre sistemas de TI (ex: ERP, CRM)?", categoria: "Uso de Ferramentas" },
-    { pergunta: "A empresa define e mede SLAs (Service Level Agreements) para serviços de TI?", categoria: "Nível de Serviço" },
-    { pergunta: "Há relatórios regulares de disponibilidade e performance dos serviços?", categoria: "Nível de Serviço" },
-    { pergunta: "Os usuários recebem suporte técnico eficiente e rápido?", categoria: "Nível de Serviço" },
-    { pergunta: "A TI está alinhada com os objetivos estratégicos da empresa?", categoria: "Alinhamento Estratégico" },
-    { pergunta: "Há participação da TI nas decisões estratégicas do negócio?", categoria: "Alinhamento Estratégico" },
-    { pergunta: "São realizados investimentos em TI baseados em ROI (Retorno sobre Investimento)?", categoria: "Alinhamento Estratégico" },
-    { pergunta: "Existe um comitê de governança de TI com representação de diretores?", categoria: "Governança de TI" },
-    { pergunta: "São seguidas normas e regulamentações de TI (ex: LGPD, ISO 27001)?", categoria: "Governança de TI" },
-    { pergunta: "Há políticas claras de responsabilidade e autoridade em TI?", categoria: "Governança de TI" },
-    { pergunta: "A empresa realiza avaliações regulares de riscos de TI?", categoria: "Gestão de Riscos" },
-    { pergunta: "Há planos de continuidade de negócio e recuperação de desastres?", categoria: "Gestão de Riscos" },
-    { pergunta: "São implementadas medidas de segurança da informação?", categoria: "Gestão de Riscos" },
-    { pergunta: "Há cultura de compartilhamento de conhecimento e aprendizado contínuo em TI?", categoria: "Cultura de TI" },
-    { pergunta: "A equipe de TI é incentivada a inovar e propor melhorias?", categoria: "Cultura de TI" }
+    {
+        pergunta: "A empresa possui processos documentados para gestão de TI?",
+        categoria: "Processos de TI",
+        frameworks: {
+            cobit: "APO03, BAI01",
+            itil: "Service Design / Service Transition",
+            iso27001: "A.5.1, A.5.2"
+        }
+    },
+    {
+        pergunta: "São utilizados frameworks como ITIL para gestão de serviços?",
+        categoria: "Processos de TI",
+        frameworks: {
+            cobit: "BAI09",
+            itil: "Service Transition / Change Enablement",
+            iso27001: "A.7.2, A.9.2"
+        }
+    },
+    {
+        pergunta: "Há implementação de processos de mudança controlada?",
+        categoria: "Processos de TI",
+        frameworks: {
+            cobit: "BAI06",
+            itil: "Change Enablement",
+            iso27001: "A.12.1"
+        }
+    },
+    {
+        pergunta: "A empresa monitora continuamente o desempenho da infraestrutura de TI?",
+        categoria: "Uso de Ferramentas",
+        frameworks: {
+            cobit: "MEA01",
+            itil: "Monitoring and Event Management",
+            iso27001: "A.12.4"
+        }
+    },
+    {
+        pergunta: "São utilizadas ferramentas de automação para tarefas repetitivas?",
+        categoria: "Uso de Ferramentas",
+        frameworks: {
+            cobit: "BAI03",
+            itil: "Automation / Orchestration",
+            iso27001: "A.12.2"
+        }
+    },
+    {
+        pergunta: "Há integração entre sistemas de TI (ex: ERP, CRM)?",
+        categoria: "Uso de Ferramentas",
+        frameworks: {
+            cobit: "APO10",
+            itil: "Service Integration and Management",
+            iso27001: "A.14.1"
+        }
+    },
+    {
+        pergunta: "A empresa define e mede SLAs (Service Level Agreements) para serviços de TI?",
+        categoria: "Nível de Serviço",
+        frameworks: {
+            cobit: "DSS01",
+            itil: "Service Level Management",
+            iso27001: "A.9.1"
+        }
+    },
+    {
+        pergunta: "Há relatórios regulares de disponibilidade e performance dos serviços?",
+        categoria: "Nível de Serviço",
+        frameworks: {
+            cobit: "MEA03",
+            itil: "Continual Improvement / Service Reporting",
+            iso27001: "A.12.1"
+        }
+    },
+    {
+        pergunta: "Os usuários recebem suporte técnico eficiente e rápido?",
+        categoria: "Nível de Serviço",
+        frameworks: {
+            cobit: "DSS02",
+            itil: "Service Desk / Incident Management",
+            iso27001: "A.16.1"
+        }
+    },
+    {
+        pergunta: "A TI está alinhada com os objetivos estratégicos da empresa?",
+        categoria: "Alinhamento Estratégico",
+        frameworks: {
+            cobit: "APO02",
+            itil: "Strategy Management",
+            iso27001: "A.6.1"
+        }
+    },
+    {
+        pergunta: "Há participação da TI nas decisões estratégicas do negócio?",
+        categoria: "Alinhamento Estratégico",
+        frameworks: {
+            cobit: "APO02",
+            itil: "Business Relationship Management",
+            iso27001: "A.6.1"
+        }
+    },
+    {
+        pergunta: "São realizados investimentos em TI baseados em ROI (Retorno sobre Investimento)?",
+        categoria: "Alinhamento Estratégico",
+        frameworks: {
+            cobit: "BAI08",
+            itil: "Financial Management",
+            iso27001: "A.18.1"
+        }
+    },
+    {
+        pergunta: "Existe um comitê de governança de TI com representação de diretores?",
+        categoria: "Governança de TI",
+        frameworks: {
+            cobit: "EDM03",
+            itil: "Governance",
+            iso27001: "A.6.1"
+        }
+    },
+    {
+        pergunta: "São seguidas normas e regulamentações de TI (ex: LGPD, ISO 27001)?",
+        categoria: "Governança de TI",
+        frameworks: {
+            cobit: "DSS05",
+            itil: "Information Security Management",
+            iso27001: "A.18.1"
+        }
+    },
+    {
+        pergunta: "Há políticas claras de responsabilidade e autoridade em TI?",
+        categoria: "Governança de TI",
+        frameworks: {
+            cobit: "APO07",
+            itil: "Governance",
+            iso27001: "A.5.1"
+        }
+    },
+    {
+        pergunta: "A empresa realiza avaliações regulares de riscos de TI?",
+        categoria: "Gestão de Riscos",
+        frameworks: {
+            cobit: "APO12",
+            itil: "Risk Management",
+            iso27001: "A.8.1"
+        }
+    },
+    {
+        pergunta: "Há planos de continuidade de negócio e recuperação de desastres?",
+        categoria: "Gestão de Riscos",
+        frameworks: {
+            cobit: "DSS04",
+            itil: "IT Service Continuity Management",
+            iso27001: "A.17.1"
+        }
+    },
+    {
+        pergunta: "São implementadas medidas de segurança da informação?",
+        categoria: "Gestão de Riscos",
+        frameworks: {
+            cobit: "DSS05",
+            itil: "Information Security Management",
+            iso27001: "A.12.1"
+        }
+    },
+    {
+        pergunta: "Há cultura de compartilhamento de conhecimento e aprendizado contínuo em TI?",
+        categoria: "Cultura de TI",
+        frameworks: {
+            cobit: "APO07",
+            itil: "Continual Improvement",
+            iso27001: "A.7.2"
+        }
+    },
+    {
+        pergunta: "A equipe de TI é incentivada a inovar e propor melhorias?",
+        categoria: "Cultura de TI",
+        frameworks: {
+            cobit: "APO14",
+            itil: "Continual Improvement",
+            iso27001: "A.7.2"
+        }
+    }
 ];
+
+const categoryWeights = {
+    "Processos de TI": 1.4,
+    "Uso de Ferramentas": 1.0,
+    "Nível de Serviço": 1.2,
+    "Alinhamento Estratégico": 1.1,
+    "Governança de TI": 1.4,
+    "Gestão de Riscos": 1.5,
+    "Cultura de TI": 0.9
+};
 
 // Função para login simples
 function login() {
@@ -144,15 +314,25 @@ function carregarQuestionario() {
     if (!questoes || questoes.length === 0) {
         questoes = questoesPadrao;
         salvarDados('questoes', questoes);
+    } else {
+        // Garantir que questões carregadas anteriormente recebam o mapeamento de frameworks
+        questoes = questoes.map(questao => {
+            const padrao = questoesPadrao.find(q => q.pergunta === questao.pergunta);
+            return padrao ? { ...padrao, ...questao } : questao;
+        });
+        salvarDados('questoes', questoes);
     }
     
     const container = document.getElementById('questionario');
     container.innerHTML = '';
 
     questoes.forEach((questao, index) => {
+        const peso = categoryWeights[questao.categoria] || 1;
         const div = document.createElement('div');
         div.innerHTML = `
             <p><strong>${questao.categoria}:</strong> ${questao.pergunta}</p>
+            <p class="framework-mapping"><em>Frameworks:</em> COBIT: ${questao.frameworks?.cobit || 'N/A'}; ITIL: ${questao.frameworks?.itil || 'N/A'}; ISO 27001: ${questao.frameworks?.iso27001 || 'N/A'}</p>
+            <p class="category-weight"><em>Peso da categoria:</em> ${peso}</p>
             <label><input type="radio" name="q${index}" value="ok" required onclick="togglePlano(${index}, false)"> OK</label>
             <label><input type="radio" name="q${index}" value="parcial" onclick="togglePlano(${index}, true)"> Parcial</label>
             <label><input type="radio" name="q${index}" value="nok" onclick="togglePlano(${index}, true)"> NOK</label>
@@ -161,7 +341,18 @@ function carregarQuestionario() {
         `;
         container.appendChild(div);
     });
-}// Função para calcular score
+}
+
+// Função para determinar nível baseado no score
+function determinarNivel(score, maxScore) {
+    const percentual = maxScore > 0 ? (score / maxScore) * 100 : 0;
+    if (percentual <= 25) return 'Artesanal';
+    else if (percentual <= 50) return 'Intermediário';
+    else if (percentual <= 75) return 'Eficaz';
+    else return 'Otimizado';
+}
+
+// Função para calcular score
 function calcularScore() {
     const questoes = carregarDados('questoes') || [];
     const usuario = carregarDados('usuarioLogado');
@@ -172,25 +363,34 @@ function calcularScore() {
         const resposta = document.querySelector(`input[name="q${index}"]:checked`);
         const evidencia = document.getElementById(`evidencia${index}`).value;
         const plano = document.getElementById(`plano${index}`).value;
+        const peso = categoryWeights[questao.categoria] || 1;
         if (resposta) {
             respostas[questao.categoria] = respostas[questao.categoria] || { ok: 0, parcial: 0, nok: 0 };
             if (resposta.value === 'ok') {
                 respostas[questao.categoria].ok++;
-                score += 5;
+                score += 5 * peso;
             } else if (resposta.value === 'parcial') {
                 respostas[questao.categoria].parcial++;
-                score += 3;
+                score += 3 * peso;
             } else {
                 respostas[questao.categoria].nok++;
                 score += 0;
             }
-            // Salvar evidência e justificativa
+            // Salvar evidência, justificativa e mapeamento de frameworks
             respostas[questao.categoria].detalhes = respostas[questao.categoria].detalhes || [];
-            respostas[questao.categoria].detalhes.push({ pergunta: questao.pergunta, resposta: resposta.value, evidencia, justificativa: plano });
+            respostas[questao.categoria].detalhes.push({
+                pergunta: questao.pergunta,
+                resposta: resposta.value,
+                evidencia,
+                justificativa: plano,
+                frameworks: questao.frameworks || null,
+                peso
+            });
         }
     });
 
-    const maxScore = questoes.length * 5;
+    const maxScore = questoes.reduce((total, questao) => total + (5 * (categoryWeights[questao.categoria] || 1)), 0);
+    const scorePercentual = maxScore > 0 ? Math.round((score / maxScore) * 100) : 0;
     
     // Armazenar com ID único por empresa (user = empresa)
     const avaliacoes = carregarDados('avaliacoes') || [];
@@ -202,22 +402,20 @@ function calcularScore() {
         empresa: empresa || usuario.usuario,
         usuario: usuario.usuario,
         perfil: usuario.perfil,
-        score: score,
-        maxScore: maxScore,
+        score: scorePercentual,
+        maxScore: 100,
+        scoreBruto: score,
+        maxScoreBruto: maxScore,
         respostas: respostas,
         timestamp: new Date().getTime()
     });
     
     salvarDados('avaliacoes', avaliacoes);
-    salvarDados('score', score);
-    salvarDados('maxScore', maxScore);
+    salvarDados('score', scorePercentual);
+    salvarDados('maxScore', 100);
 
     // Determinar nível
-    let nivel;
-    if (score <= 25) nivel = 'Artesanal';
-    else if (score <= 50) nivel = 'Intermediário';
-    else if (score <= 75) nivel = 'Eficaz';
-    else nivel = 'Otimizado';
+    const nivel = determinarNivel(scorePercentual, 100);
 
     salvarDados('nivel', nivel);
     window.location.href = 'relatorio.html';
@@ -281,7 +479,7 @@ function exibirRelatorio(avaliacaoAtual = null) {
 
     const score = avaliacaoAtual.score || 0;
     const maxScore = avaliacaoAtual.maxScore || 100;
-    const nivel = carregarDados('nivel') || 'Não calculado';
+    const nivel = determinarNivel(score, maxScore);
     const respostas = avaliacaoAtual.respostas || {};
     const empresa = avaliacaoAtual.empresa || 'Sem identificação';
 
@@ -294,8 +492,9 @@ function exibirRelatorio(avaliacaoAtual = null) {
     detalhes.innerHTML = '';
     for (const categoria in respostas) {
         if (categoria === 'detalhes') continue;
+        const peso = categoryWeights[categoria] || 1;
         const div = document.createElement('div');
-        div.innerHTML = `<h3>${categoria}</h3><p>OK: ${respostas[categoria].ok}<br>Parcial: ${respostas[categoria].parcial}<br>NOK: ${respostas[categoria].nok}</p>`;
+        div.innerHTML = `<h3>${categoria} (Peso: ${peso})</h3><p>OK: ${respostas[categoria].ok}<br>Parcial: ${respostas[categoria].parcial}<br>NOK: ${respostas[categoria].nok}</p>`;
         detalhes.appendChild(div);
     }
 
@@ -366,7 +565,7 @@ function exibirRelatorio(avaliacaoAtual = null) {
                     if (d.resposta !== 'ok') {
                         hasProblemas = true;
                         const p = document.createElement('p');
-                        p.innerHTML = `<strong>[${d.resposta.toUpperCase()}] ${d.pergunta}</strong><br>Justificativa: ${d.justificativa || 'N/A'}<br>Evidência: ${d.evidencia || 'N/A'}`;
+                        p.innerHTML = `<strong>[${d.resposta.toUpperCase()}] ${d.pergunta}</strong><br>Justificativa: ${d.justificativa || 'N/A'}<br>Evidência: ${d.evidencia || 'N/A'}<br><small>Mapeamento: COBIT: ${d.frameworks?.cobit || 'N/A'}; ITIL: ${d.frameworks?.itil || 'N/A'}; ISO 27001: ${d.frameworks?.iso27001 || 'N/A'}</small>`;
                         listaProblemas.appendChild(p);
                     }
                 });
@@ -377,6 +576,319 @@ function exibirRelatorio(avaliacaoAtual = null) {
         }
         interpretacaoDiv.appendChild(listaProblemas);
         detalhes.appendChild(interpretacaoDiv);
+}
+
+// ==================== GESTÃO DE INCIDENTES ====================
+
+function mostrarFormularioIncidente() {
+    document.getElementById('novoIncidente').style.display = 'block';
+    document.getElementById('listaIncidentes').style.display = 'none';
+}
+
+function cancelarIncidente() {
+    document.getElementById('formIncidente').reset();
+    document.getElementById('novoIncidente').style.display = 'none';
+    document.getElementById('listaIncidentes').style.display = 'block';
+}
+
+function salvarIncidente() {
+    const titulo = document.getElementById('titulo').value;
+    const descricao = document.getElementById('descricao').value;
+    const prioridade = document.getElementById('prioridade').value;
+    const categoria = document.getElementById('categoria').value;
+    const status = document.getElementById('status').value;
+
+    if (titulo && descricao && prioridade && categoria && status) {
+        const incidentes = carregarDados('incidentes') || [];
+        const usuario = carregarDados('usuarioLogado');
+
+        const incidente = {
+            id: `INC${Date.now()}`,
+            titulo,
+            descricao,
+            prioridade,
+            categoria,
+            status,
+            usuario: usuario.usuario,
+            dataCriacao: new Date().toISOString(),
+            dataAtualizacao: new Date().toISOString()
+        };
+
+        incidentes.push(incidente);
+        salvarDados('incidentes', incidentes);
+
+        alert('Incidente salvo com sucesso!');
+        cancelarIncidente();
+        carregarIncidentes();
+    } else {
+        alert('Preencha todos os campos obrigatórios!');
+    }
+}
+
+function carregarIncidentes() {
+    const incidentes = carregarDados('incidentes') || [];
+    const container = document.getElementById('incidentesList');
+    container.innerHTML = '';
+
+    if (incidentes.length === 0) {
+        container.innerHTML = '<p>Nenhum incidente registrado.</p>';
+        return;
+    }
+
+    incidentes.forEach(incidente => {
+        const div = document.createElement('div');
+        div.className = 'incidente-item';
+        div.innerHTML = `
+            <h3>${incidente.id}: ${incidente.titulo}</h3>
+            <p><strong>Status:</strong> ${incidente.status}</p>
+            <p><strong>Prioridade:</strong> ${incidente.prioridade}</p>
+            <p><strong>Categoria:</strong> ${incidente.categoria}</p>
+            <p><strong>Descrição:</strong> ${incidente.descricao}</p>
+            <p><strong>Criado por:</strong> ${incidente.usuario} em ${new Date(incidente.dataCriacao).toLocaleString()}</p>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ==================== GESTÃO DE PROBLEMAS ====================
+
+function mostrarFormularioProblema() {
+    document.getElementById('novoProblema').style.display = 'block';
+    document.getElementById('listaProblemas').style.display = 'none';
+}
+
+function cancelarProblema() {
+    document.getElementById('formProblema').reset();
+    document.getElementById('novoProblema').style.display = 'none';
+    document.getElementById('listaProblemas').style.display = 'block';
+}
+
+function salvarProblema() {
+    const titulo = document.getElementById('tituloProblema').value;
+    const descricao = document.getElementById('descricaoProblema').value;
+    const impacto = document.getElementById('impacto').value;
+    const urgencia = document.getElementById('urgencia').value;
+    const categoria = document.getElementById('categoriaProblema').value;
+    const status = document.getElementById('statusProblema').value;
+    const incidenteRelacionado = document.getElementById('incidenteRelacionado').value;
+
+    if (titulo && descricao && impacto && urgencia && categoria && status) {
+        const problemas = carregarDados('problemas') || [];
+        const usuario = carregarDados('usuarioLogado');
+
+        const problema = {
+            id: `PRB${Date.now()}`,
+            titulo,
+            descricao,
+            impacto,
+            urgencia,
+            categoria,
+            status,
+            incidenteRelacionado: incidenteRelacionado || null,
+            usuario: usuario.usuario,
+            dataCriacao: new Date().toISOString(),
+            dataAtualizacao: new Date().toISOString()
+        };
+
+        problemas.push(problema);
+        salvarDados('problemas', problemas);
+
+        alert('Problema salvo com sucesso!');
+        cancelarProblema();
+        carregarProblemas();
+    } else {
+        alert('Preencha todos os campos obrigatórios!');
+    }
+}
+
+function carregarProblemas() {
+    const problemas = carregarDados('problemas') || [];
+    const container = document.getElementById('problemasList');
+    container.innerHTML = '';
+
+    if (problemas.length === 0) {
+        container.innerHTML = '<p>Nenhum problema registrado.</p>';
+        return;
+    }
+
+    problemas.forEach(problema => {
+        const div = document.createElement('div');
+        div.className = 'problema-item';
+        div.innerHTML = `
+            <h3>${problema.id}: ${problema.titulo}</h3>
+            <p><strong>Status:</strong> ${problema.status}</p>
+            <p><strong>Impacto:</strong> ${problema.impacto} | <strong>Urgência:</strong> ${problema.urgencia}</p>
+            <p><strong>Categoria:</strong> ${problema.categoria}</p>
+            ${problema.incidenteRelacionado ? `<p><strong>Incidente Relacionado:</strong> ${problema.incidenteRelacionado}</p>` : ''}
+            <p><strong>Descrição:</strong> ${problema.descricao}</p>
+            <p><strong>Criado por:</strong> ${problema.usuario} em ${new Date(problema.dataCriacao).toLocaleString()}</p>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ==================== GESTÃO DE MUDANÇAS ====================
+
+function mostrarFormularioMudanca() {
+    document.getElementById('novaMudanca').style.display = 'block';
+    document.getElementById('listaMudancas').style.display = 'none';
+}
+
+function cancelarMudanca() {
+    document.getElementById('formMudanca').reset();
+    document.getElementById('novaMudanca').style.display = 'none';
+    document.getElementById('listaMudancas').style.display = 'block';
+}
+
+function salvarMudanca() {
+    const titulo = document.getElementById('tituloMudanca').value;
+    const descricao = document.getElementById('descricaoMudanca').value;
+    const tipo = document.getElementById('tipoMudanca').value;
+    const categoria = document.getElementById('categoriaMudanca').value;
+    const risco = document.getElementById('risco').value;
+    const impacto = document.getElementById('impactoMudanca').value;
+    const dataPlanejada = document.getElementById('dataPlanejada').value;
+    const status = document.getElementById('statusMudanca').value;
+    const aprovador = document.getElementById('aprovador').value;
+
+    if (titulo && descricao && tipo && categoria && risco && impacto && dataPlanejada && status && aprovador) {
+        const mudancas = carregarDados('mudancas') || [];
+        const usuario = carregarDados('usuarioLogado');
+
+        const mudanca = {
+            id: `CHG${Date.now()}`,
+            titulo,
+            descricao,
+            tipo,
+            categoria,
+            risco,
+            impacto,
+            dataPlanejada,
+            status,
+            aprovador,
+            usuario: usuario.usuario,
+            dataCriacao: new Date().toISOString(),
+            dataAtualizacao: new Date().toISOString()
+        };
+
+        mudancas.push(mudanca);
+        salvarDados('mudancas', mudancas);
+
+        alert('Mudança salva com sucesso!');
+        cancelarMudanca();
+        carregarMudancas();
+    } else {
+        alert('Preencha todos os campos obrigatórios!');
+    }
+}
+
+function carregarMudancas() {
+    const mudancas = carregarDados('mudancas') || [];
+    const container = document.getElementById('mudancasList');
+    container.innerHTML = '';
+
+    if (mudancas.length === 0) {
+        container.innerHTML = '<p>Nenhuma mudança registrada.</p>';
+        return;
+    }
+
+    mudancas.forEach(mudanca => {
+        const div = document.createElement('div');
+        div.className = 'mudanca-item';
+        div.innerHTML = `
+            <h3>${mudanca.id}: ${mudanca.titulo}</h3>
+            <p><strong>Status:</strong> ${mudanca.status} | <strong>Tipo:</strong> ${mudanca.tipo}</p>
+            <p><strong>Risco:</strong> ${mudanca.risco} | <strong>Impacto:</strong> ${mudanca.impacto}</p>
+            <p><strong>Categoria:</strong> ${mudanca.categoria}</p>
+            <p><strong>Data Planejada:</strong> ${new Date(mudanca.dataPlanejada).toLocaleString()}</p>
+            <p><strong>Aprovador:</strong> ${mudanca.aprovador}</p>
+            <p><strong>Descrição:</strong> ${mudanca.descricao}</p>
+            <p><strong>Criado por:</strong> ${mudanca.usuario} em ${new Date(mudanca.dataCriacao).toLocaleString()}</p>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// ==================== CATÁLOGO DE SERVIÇOS ====================
+
+function mostrarFormularioServico() {
+    document.getElementById('novoServico').style.display = 'block';
+    document.getElementById('listaServicos').style.display = 'none';
+}
+
+function cancelarServico() {
+    document.getElementById('formServico').reset();
+    document.getElementById('novoServico').style.display = 'none';
+    document.getElementById('listaServicos').style.display = 'block';
+}
+
+function salvarServico() {
+    const nome = document.getElementById('nomeServico').value;
+    const descricao = document.getElementById('descricaoServico').value;
+    const categoria = document.getElementById('categoriaServico').value;
+    const nivel = document.getElementById('nivelServico').value;
+    const disponibilidade = document.getElementById('disponibilidade').value;
+    const tempoResposta = document.getElementById('tempoResposta').value;
+    const custoMensal = document.getElementById('custoMensal').value;
+    const status = document.getElementById('statusServico').value;
+    const responsavel = document.getElementById('responsavel').value;
+
+    if (nome && descricao && categoria && nivel && disponibilidade && tempoResposta && custoMensal && status && responsavel) {
+        const servicos = carregarDados('servicos') || [];
+        const usuario = carregarDados('usuarioLogado');
+
+        const servico = {
+            id: `SVC${Date.now()}`,
+            nome,
+            descricao,
+            categoria,
+            nivel,
+            disponibilidade: parseFloat(disponibilidade),
+            tempoResposta: parseFloat(tempoResposta),
+            custoMensal: parseFloat(custoMensal),
+            status,
+            responsavel,
+            usuario: usuario.usuario,
+            dataCriacao: new Date().toISOString(),
+            dataAtualizacao: new Date().toISOString()
+        };
+
+        servicos.push(servico);
+        salvarDados('servicos', servicos);
+
+        alert('Serviço salvo com sucesso!');
+        cancelarServico();
+        carregarServicos();
+    } else {
+        alert('Preencha todos os campos obrigatórios!');
+    }
+}
+
+function carregarServicos() {
+    const servicos = carregarDados('servicos') || [];
+    const container = document.getElementById('servicosList');
+    container.innerHTML = '';
+
+    if (servicos.length === 0) {
+        container.innerHTML = '<p>Nenhum serviço cadastrado.</p>';
+        return;
+    }
+
+    servicos.forEach(servico => {
+        const div = document.createElement('div');
+        div.className = 'servico-item';
+        div.innerHTML = `
+            <h3>${servico.id}: ${servico.nome}</h3>
+            <p><strong>Status:</strong> ${servico.status} | <strong>Nível:</strong> ${servico.nivel}</p>
+            <p><strong>Categoria:</strong> ${servico.categoria}</p>
+            <p><strong>Disponibilidade:</strong> ${servico.disponibilidade}% | <strong>Tempo de Resposta:</strong> ${servico.tempoResposta}h</p>
+            <p><strong>Custo Mensal:</strong> R$ ${servico.custoMensal.toFixed(2)}</p>
+            <p><strong>Responsável:</strong> ${servico.responsavel}</p>
+            <p><strong>Descrição:</strong> ${servico.descricao}</p>
+            <p><strong>Criado por:</strong> ${servico.usuario} em ${new Date(servico.dataCriacao).toLocaleString()}</p>
+        `;
+        container.appendChild(div);
+    });
 }
 
 // Verificar se usuário está logado

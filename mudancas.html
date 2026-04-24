@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Mudanças - Avaliação de Maturidade da TI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="verificarLogin(); carregarMudancas()">
+    <header>
+        <h1>Gestão de Mudanças</h1>
+        <nav>
+            <a href="index.html">Voltar</a>
+        </nav>
+    </header>
+    <main>
+        <section id="novaMudanca" style="display: none;">
+            <h2>Nova Mudança</h2>
+            <form id="formMudanca">
+                <label for="tituloMudanca">Título:</label>
+                <input type="text" id="tituloMudanca" required>
+
+                <label for="descricaoMudanca">Descrição:</label>
+                <textarea id="descricaoMudanca" required></textarea>
+
+                <label for="tipoMudanca">Tipo de Mudança:</label>
+                <select id="tipoMudanca" required>
+                    <option value="emergencial">Emergencial</option>
+                    <option value="padronizada">Padronizada</option>
+                    <option value="normal">Normal</option>
+                </select>
+
+                <label for="categoriaMudanca">Categoria:</label>
+                <select id="categoriaMudanca" required>
+                    <option value="hardware">Hardware</option>
+                    <option value="software">Software</option>
+                    <option value="rede">Rede</option>
+                    <option value="seguranca">Segurança</option>
+                    <option value="processo">Processo</option>
+                    <option value="outros">Outros</option>
+                </select>
+
+                <label for="risco">Risco:</label>
+                <select id="risco" required>
+                    <option value="baixo">Baixo</option>
+                    <option value="medio">Médio</option>
+                    <option value="alto">Alto</option>
+                    <option value="critico">Crítico</option>
+                </select>
+
+                <label for="impactoMudanca">Impacto:</label>
+                <select id="impactoMudanca" required>
+                    <option value="baixo">Baixo</option>
+                    <option value="medio">Médio</option>
+                    <option value="alto">Alto</option>
+                    <option value="critico">Crítico</option>
+                </select>
+
+                <label for="dataPlanejada">Data Planejada:</label>
+                <input type="datetime-local" id="dataPlanejada" required>
+
+                <label for="statusMudanca">Status:</label>
+                <select id="statusMudanca" required>
+                    <option value="planejada">Planejada</option>
+                    <option value="aprovada">Aprovada</option>
+                    <option value="em_execucao">Em Execução</option>
+                    <option value="testada">Testada</option>
+                    <option value="implementada">Implementada</option>
+                    <option value="fechada">Fechada</option>
+                    <option value="cancelada">Cancelada</option>
+                </select>
+
+                <label for="aprovador">Aprovador:</label>
+                <input type="text" id="aprovador" required>
+
+                <button type="button" onclick="salvarMudanca()">Salvar Mudança</button>
+                <button type="button" onclick="cancelarMudanca()">Cancelar</button>
+            </form>
+        </section>
+
+        <section id="listaMudancas">
+            <h2>Mudanças Registradas</h2>
+            <button onclick="mostrarFormularioMudanca()">Nova Mudança</button>
+            <div id="mudancasList"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 - Sistema de Avaliação de Maturidade da TI</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

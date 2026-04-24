@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Incidentes - Avaliação de Maturidade da TI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="verificarLogin(); carregarIncidentes()">
+    <header>
+        <h1>Gestão de Incidentes</h1>
+        <nav>
+            <a href="index.html">Voltar</a>
+        </nav>
+    </header>
+    <main>
+        <section id="novoIncidente" style="display: none;">
+            <h2>Novo Incidente</h2>
+            <form id="formIncidente">
+                <label for="titulo">Título:</label>
+                <input type="text" id="titulo" required>
+
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" required></textarea>
+
+                <label for="prioridade">Prioridade:</label>
+                <select id="prioridade" required>
+                    <option value="baixa">Baixa</option>
+                    <option value="media">Média</option>
+                    <option value="alta">Alta</option>
+                    <option value="critica">Crítica</option>
+                </select>
+
+                <label for="categoria">Categoria:</label>
+                <select id="categoria" required>
+                    <option value="hardware">Hardware</option>
+                    <option value="software">Software</option>
+                    <option value="rede">Rede</option>
+                    <option value="seguranca">Segurança</option>
+                    <option value="usuario">Usuário</option>
+                    <option value="outros">Outros</option>
+                </select>
+
+                <label for="status">Status:</label>
+                <select id="status" required>
+                    <option value="aberto">Aberto</option>
+                    <option value="em_andamento">Em Andamento</option>
+                    <option value="resolvido">Resolvido</option>
+                    <option value="fechado">Fechado</option>
+                </select>
+
+                <button type="button" onclick="salvarIncidente()">Salvar Incidente</button>
+                <button type="button" onclick="cancelarIncidente()">Cancelar</button>
+            </form>
+        </section>
+
+        <section id="listaIncidentes">
+            <h2>Incidentes Registrados</h2>
+            <button onclick="mostrarFormularioIncidente()">Novo Incidente</button>
+            <div id="incidentesList"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 - Sistema de Avaliação de Maturidade da TI</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

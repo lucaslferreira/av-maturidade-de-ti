@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Serviços - Avaliação de Maturidade da TI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="verificarLogin(); carregarServicos()">
+    <header>
+        <h1>Catálogo de Serviços</h1>
+        <nav>
+            <a href="index.html">Voltar</a>
+        </nav>
+    </header>
+    <main>
+        <section id="novoServico" style="display: none;">
+            <h2>Novo Serviço</h2>
+            <form id="formServico">
+                <label for="nomeServico">Nome do Serviço:</label>
+                <input type="text" id="nomeServico" required>
+
+                <label for="descricaoServico">Descrição:</label>
+                <textarea id="descricaoServico" required></textarea>
+
+                <label for="categoriaServico">Categoria:</label>
+                <select id="categoriaServico" required>
+                    <option value="infraestrutura">Infraestrutura</option>
+                    <option value="aplicacao">Aplicação</option>
+                    <option value="seguranca">Segurança</option>
+                    <option value="suporte">Suporte</option>
+                    <option value="consultoria">Consultoria</option>
+                    <option value="outros">Outros</option>
+                </select>
+
+                <label for="nivelServico">Nível de Serviço:</label>
+                <select id="nivelServico" required>
+                    <option value="basico">Básico</option>
+                    <option value="padrao">Padrão</option>
+                    <option value="premium">Premium</option>
+                    <option value="empresarial">Empresarial</option>
+                </select>
+
+                <label for="disponibilidade">Disponibilidade Requerida (%):</label>
+                <input type="number" id="disponibilidade" min="0" max="100" step="0.1" required>
+
+                <label for="tempoResposta">Tempo de Resposta (horas):</label>
+                <input type="number" id="tempoResposta" min="0" step="0.5" required>
+
+                <label for="custoMensal">Custo Mensal Estimado (R$):</label>
+                <input type="number" id="custoMensal" min="0" step="0.01" required>
+
+                <label for="statusServico">Status:</label>
+                <select id="statusServico" required>
+                    <option value="planejado">Planejado</option>
+                    <option value="em_desenvolvimento">Em Desenvolvimento</option>
+                    <option value="disponivel">Disponível</option>
+                    <option value="obsoleto">Obsoleto</option>
+                    <option value="retirado">Retirado</option>
+                </select>
+
+                <label for="responsavel">Responsável:</label>
+                <input type="text" id="responsavel" required>
+
+                <button type="button" onclick="salvarServico()">Salvar Serviço</button>
+                <button type="button" onclick="cancelarServico()">Cancelar</button>
+            </form>
+        </section>
+
+        <section id="listaServicos">
+            <h2>Serviços Cadastrados</h2>
+            <button onclick="mostrarFormularioServico()">Novo Serviço</button>
+            <div id="servicosList"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 - Sistema de Avaliação de Maturidade da TI</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -26,6 +26,108 @@ nav a:hover {
     text-decoration: underline;
 }
 
+/* ==================== ESTILOS PARA MÓDULOS ITIL ==================== */
+
+.incidente-item, .problema-item, .mudanca-item, .servico-item {
+    background-color: white;
+    margin: 1rem 0;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 4px solid #007bff;
+}
+
+.incidente-item {
+    border-left-color: #dc3545;
+}
+
+.problema-item {
+    border-left-color: #ffc107;
+}
+
+.mudanca-item {
+    border-left-color: #28a745;
+}
+
+.servico-item {
+    border-left-color: #17a2b8;
+}
+
+.incidente-item h3, .problema-item h3, .mudanca-item h3, .servico-item h3 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.incidente-item p, .problema-item p, .mudanca-item p, .servico-item p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.incidente-item p strong, .problema-item p strong, .mudanca-item p strong, .servico-item p strong {
+    color: #333;
+}
+
+/* Formulários dos módulos ITIL */
+#novoIncidente form, #novoProblema form, #novaMudanca form, #novoServico form {
+    margin-top: 2rem;
+}
+
+#novoIncidente form label, #novoProblema form label, #novaMudanca form label, #novoServico form label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+#novoIncidente form input, #novoIncidente form select, #novoIncidente form textarea,
+#novoProblema form input, #novoProblema form select, #novoProblema form textarea,
+#novaMudanca form input, #novaMudanca form select, #novaMudanca form textarea,
+#novoServico form input, #novoServico form select, #novoServico form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#novoIncidente form textarea, #novoProblema form textarea, #novaMudanca form textarea, #novoServico form textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+#novoIncidente form button, #novoProblema form button, #novaMudanca form button, #novoServico form button {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-right: 1rem;
+}
+
+#novoIncidente form button[type="button"]:first-of-type, #novoProblema form button[type="button"]:first-of-type,
+#novaMudanca form button[type="button"]:first-of-type, #novoServico form button[type="button"]:first-of-type {
+    background-color: #007bff;
+    color: white;
+}
+
+#novoIncidente form button[type="button"]:first-of-type:hover, #novoProblema form button[type="button"]:first-of-type:hover,
+#novaMudanca form button[type="button"]:first-of-type:hover, #novoServico form button[type="button"]:first-of-type:hover {
+    background-color: #0056b3;
+}
+
+#novoIncidente form button[type="button"]:last-of-type, #novoProblema form button[type="button"]:last-of-type,
+#novaMudanca form button[type="button"]:last-of-type, #novoServico form button[type="button"]:last-of-type {
+    background-color: #6c757d;
+    color: white;
+}
+
+#novoIncidente form button[type="button"]:last-of-type:hover, #novoProblema form button[type="button"]:last-of-type:hover,
+#novaMudanca form button[type="button"]:last-of-type:hover, #novoServico form button[type="button"]:last-of-type:hover {
+    background-color: #545b62;
+}
+
 main {
     padding: 2rem;
     max-width: 800px;

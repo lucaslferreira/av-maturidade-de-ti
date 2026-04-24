@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Problemas - Avaliação de Maturidade da TI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="verificarLogin(); carregarProblemas()">
+    <header>
+        <h1>Gestão de Problemas</h1>
+        <nav>
+            <a href="index.html">Voltar</a>
+        </nav>
+    </header>
+    <main>
+        <section id="novoProblema" style="display: none;">
+            <h2>Novo Problema</h2>
+            <form id="formProblema">
+                <label for="tituloProblema">Título:</label>
+                <input type="text" id="tituloProblema" required>
+
+                <label for="descricaoProblema">Descrição:</label>
+                <textarea id="descricaoProblema" required></textarea>
+
+                <label for="impacto">Impacto:</label>
+                <select id="impacto" required>
+                    <option value="baixo">Baixo</option>
+                    <option value="medio">Médio</option>
+                    <option value="alto">Alto</option>
+                    <option value="critico">Crítico</option>
+                </select>
+
+                <label for="urgencia">Urgência:</label>
+                <select id="urgencia" required>
+                    <option value="baixa">Baixa</option>
+                    <option value="media">Média</option>
+                    <option value="alta">Alta</option>
+                    <option value="critica">Crítica</option>
+                </select>
+
+                <label for="categoriaProblema">Categoria:</label>
+                <select id="categoriaProblema" required>
+                    <option value="hardware">Hardware</option>
+                    <option value="software">Software</option>
+                    <option value="rede">Rede</option>
+                    <option value="seguranca">Segurança</option>
+                    <option value="processo">Processo</option>
+                    <option value="outros">Outros</option>
+                </select>
+
+                <label for="statusProblema">Status:</label>
+                <select id="statusProblema" required>
+                    <option value="identificado">Identificado</option>
+                    <option value="investigando">Investigando</option>
+                    <option value="resolvendo">Resolvendo</option>
+                    <option value="resolvido">Resolvido</option>
+                    <option value="fechado">Fechado</option>
+                </select>
+
+                <label for="incidenteRelacionado">Incidente Relacionado (opcional):</label>
+                <input type="text" id="incidenteRelacionado" placeholder="ID do incidente">
+
+                <button type="button" onclick="salvarProblema()">Salvar Problema</button>
+                <button type="button" onclick="cancelarProblema()">Cancelar</button>
+            </form>
+        </section>
+
+        <section id="listaProblemas">
+            <h2>Problemas Registrados</h2>
+            <button onclick="mostrarFormularioProblema()">Novo Problema</button>
+            <div id="problemasList"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 - Sistema de Avaliação de Maturidade da TI</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
